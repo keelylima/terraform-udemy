@@ -8,9 +8,21 @@ terraform {
 }
 
 provider "docker" {
-    host = "npipe:////.//pipe//docker_engine"
+  host = "npipe:////.//pipe//docker_engine"
 }
 
+# essa é a primeira imagem que eu criei, que aparece em images no docker desktop
 resource "docker_image" "nodered_image" {
   name = "nodered/node-red:latest"
+}
+
+# aqui eu vou criar o container baseado na image que subi primeiro
+resource "docker_container" "nodered_container" {
+  name = "nodered"
+  # .latest é retirado do output do resource docker_image: https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/image
+  image = docker_image.nodered_image.latest
+  ports {
+    internal = 1880
+    external = 1880
+  }
 }
