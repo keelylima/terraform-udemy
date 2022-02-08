@@ -26,3 +26,13 @@ resource "docker_container" "nodered_container" {
     external = 1880
   }
 }
+
+output "IPAddress" {
+  value = docker_container.nodered_container.ip_address
+  description = "IP Address"
+}
+
+output "Network" {
+   value       = docker_container.nodered_container.network_data
+   description = "Network Data"
+}
