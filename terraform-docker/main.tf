@@ -37,20 +37,27 @@ resource "docker_container" "nodered_container" {
   }
 }
 
-output "name-1" {
-  value       = docker_container.nodered_container[0].name
+# para não duplicar, usamos o splat expression
+output "name" {
+  value = docker_container.nodered_container[*].name
   description = "name"
 }
 
-output "name-2" {
-  value       = docker_container.nodered_container[1].name
-  description = "name"
-}
+# sem o splat expression temos que criar dessa forma
+# output "name-1" {
+#   value       = docker_container.nodered_container[0].name
+#   description = "name"
+# }
 
-output "name-3" {
-  value       = docker_container.nodered_container[2].name
-  description = "name"
-}
+# output "name-2" {
+#   value       = docker_container.nodered_container[1].name
+#   description = "name"
+# }
+
+# output "name-3" {
+#   value       = docker_container.nodered_container[2].name
+#   description = "name"
+# }
 
 
 
