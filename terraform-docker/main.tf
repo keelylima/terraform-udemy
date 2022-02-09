@@ -18,7 +18,7 @@ resource "docker_image" "nodered_image" {
 
 # aqui eu vou criar o container baseado na image que subi primeiro
 resource "docker_container" "nodered_container" {
-  name = "nodered"
+  name = "nodered2"
   # .latest é retirado do output do resource docker_image: https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/image
   image = docker_image.nodered_image.latest
   ports {
@@ -32,7 +32,22 @@ output "IPAddress" {
   description = "IP Address"
 }
 
-output "Network" {
-   value       = docker_container.nodered_container.network_data
-   description = "Network Data"
+output "Gateway" {
+   value       = docker_container.nodered_container.network_data[0].gateway
+   description = "Gateway"
+}
+
+output "Name" {
+  value = docker_container.nodered_container.name
+  description = "Name"
+}
+
+output "Image-ID" {
+  value = docker_container.nodered_container.image
+  description = "image"
+}
+
+output "Join" {
+  value = join(":", [docker_container.nodered_container.ip_address, docker_container.nodered_container.ports[0].external])
+  description = "Join"
 }
