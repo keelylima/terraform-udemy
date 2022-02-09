@@ -59,6 +59,37 @@ output "name" {
 #   description = "name"
 # }
 
+# for loop
+output "ip-address" {
+  value       = [for i in docker_container.nodered_container[*]: i.ip_address]
+  description = "ip-address"
+}
+
+# retorna um array só, com os elementos
+output "ports" {
+  value       = [for i in docker_container.nodered_container[*]: i.ports[0]["external"]]
+  description = "ports"
+}
+
+# com splat ele retorna um array com outros arrays dentro (pra cada valor)
+output "ports-two" {
+  value       = [for i in docker_container.nodered_container[*]: i.ports[*]["external"]]
+  description = "ports-two"
+}
+
+# para usar o join, preciso provisionar uma lista, por isso utilizo [], por padrão acessando o index como[0] eu recebo de retorno apenas um array com itens dentro, mas pro join eu preciso que cada item seja um array
+output "join" {
+  value       = [for i in docker_container.nodered_container[*]: join(":", [i.ip_address], [i.ports[0]["external"]])]
+  description = "join"
+}
+
+# por isso aqui eu não preciso utilizar [] em volta, porque com splat já é retornado um array com cada item dentro de outro array
+output "join_two" {
+  value       = [for i in docker_container.nodered_container[*]: join(":", [i.ip_address], i.ports[*]["external"])]
+  description = "join_two"
+}
+
+
 
 
 
