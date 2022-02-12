@@ -11,6 +11,21 @@ provider "docker" {
   host = "npipe:////.//pipe//docker_engine"
 }
 
+variable "ext_port" {
+  type = number
+  default = 1880
+}
+
+variable "count_resources" {
+  type = number
+  default = 1
+}
+
+variable "int_port" {
+  type = number
+  default = 1880
+}
+
 # essa é a primeira imagem que eu criei, que aparece em images no docker desktop
 resource "docker_image" "nodered_image" {
   name = "nodered/node-red:latest"
@@ -18,8 +33,9 @@ resource "docker_image" "nodered_image" {
 
 # Apesar do resource ser random, ele não cria um id diferente pra cada container, é preciso ter dois resources
 resource "random_string" "random" {
-  count     = 3
-  length    = 16
+  # sempre que trabalhamos com count, o state possui index, [0]
+  count     = var.count_resources
+  length    = 5
   number    = true
   upper     = true
   min_lower = 5
@@ -27,160 +43,17 @@ resource "random_string" "random" {
 }
 
 resource "docker_container" "nodered_container" {
-  count = 3
+  count = var.count_resources
   # para pegar o valor do index/indice que está passando na hora, se utiliza count.index
-  name  = join("-", ["nodered", random_string.random[count.index].id])
+  name  = join("-", ["nodereeed", random_string.random[count.index].id])
   image = docker_image.nodered_image.latest
   ports {
-    internal = 1880
-    # external = 1880
+    internal = var.int_port
+    external = var.ext_port
   }
 }
 
-# para não duplicar, usamos o splat expression
 output "name" {
-  value = docker_container.nodered_container[*].name
-  description = "name"
+  value       = docker_container.nodered_container[*].name
+  description = "container name"
 }
-
-# sem o splat expression temos que criar dessa forma
-# output "name-1" {
-#   value       = docker_container.nodered_container[0].name
-#   description = "name"
-# }
-
-# output "name-2" {
-#   value       = docker_container.nodered_container[1].name
-#   description = "name"
-# }
-
-# output "name-3" {
-#   value       = docker_container.nodered_container[2].name
-#   description = "name"
-# }
-
-# for loop
-output "ip-address" {
-  value       = [for i in docker_container.nodered_container[*]: i.ip_address]
-  description = "ip-address"
-}
-
-# retorna um array só, com os elementos
-output "ports" {
-  value       = [for i in docker_container.nodered_container[*]: i.ports[0]["external"]]
-  description = "ports"
-}
-
-# com splat ele retorna um array com outros arrays dentro (pra cada valor)
-output "ports-two" {
-  value       = [for i in docker_container.nodered_container[*]: i.ports[*]["external"]]
-  description = "ports-two"
-}
-
-# para usar o join, preciso provisionar uma lista, por isso utilizo [], por padrão acessando o index como[0] eu recebo de retorno apenas um array com itens dentro, mas pro join eu preciso que cada item seja um array
-output "join" {
-  value       = [for i in docker_container.nodered_container[*]: join(":", [i.ip_address], [i.ports[0]["external"]])]
-  description = "join"
-}
-
-# por isso aqui eu não preciso utilizar [] em volta, porque com splat já é retornado um array com cada item dentro de outro array
-output "join_two" {
-  value       = [for i in docker_container.nodered_container[*]: join(":", [i.ip_address], i.ports[*]["external"])]
-  description = "join_two"
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Códigos comentados para estudo
-
-# resource "random_string" "random_two" {
-#   length    = 16
-#   number    = true
-#   upper     = true
-#   min_lower = 5
-#   special   = false
-# }
-
-# aqui eu vou criar o container baseado na image que subi primeiro
-# resource "docker_container" "nodered_container" {
-#   name = join("-", ["nodered", random_string.random.id])
-#   # .latest é retirado do output do resource docker_image: https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/image
-#   image = docker_image.nodered_image.latest
-#   ports {
-#     internal = 1880
-#     # external = 1880
-#   }
-# }
-
-# resource "docker_container" "nodered_container_two" {
-#   name = join("-", ["nodered", random_string.random_two.id])
-#   # .latest é retirado do output do resource docker_image: https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/image
-#   image = docker_image.nodered_image.latest
-#   ports {
-#     internal = 1880
-#     # external = 1880
-#   }
-# }
-
-
-# output "container-one" {
-#   value       = docker_container.nodered_container.name
-#   description = "container-one"
-# }
-
-# output "container-two" {
-#   value       = docker_container.nodered_container_two.name
-#   description = "container-two"
-# }
-
-
-# output "IPAddress" {
-#   value       = docker_container.nodered_container.ip_address
-#   description = "IP Address"
-# }
-
-# output "Gateway" {
-#   value       = docker_container.nodered_container.network_data[0].gateway
-#   description = "Gateway"
-# }
-
-# output "Name" {
-#   value       = docker_container.nodered_container.name
-#   description = "Name"
-# }
-
-# output "Image-ID" {
-#   value       = docker_container.nodered_container.image
-#   description = "image"
-# }
-
-# output "Join" {
-#   value       = join(":", [docker_container.nodered_container.ip_address, docker_container.nodered_container.ports[0].external])
-#   description = "Join"
-# }
