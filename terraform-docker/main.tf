@@ -12,18 +12,23 @@ provider "docker" {
 }
 
 variable "ext_port" {
-  type = number
+  type    = number
   default = 1880
 }
 
 variable "count_resources" {
-  type = number
+  type    = number
   default = 1
 }
 
 variable "int_port" {
-  type = number
-  default = 1880
+  type    = number
+  default = 1885
+
+  validation {
+    condition     = var.int_port == 1880
+    error_message = "The port must to be 1880."
+  }
 }
 
 # essa é a primeira imagem que eu criei, que aparece em images no docker desktop
