@@ -36,5 +36,10 @@ resource "docker_container" "nodered_container" {
     internal = var.int_port
     external = var.ext_port[count.index]
   }
+  volumes {
+    container_path = "/data"
+    #path.cwd pega D:/ ele reclama pq tem que ser um absolute path
+    # host_path = "${path.cwd}/noderedvol"
+  }
 }
 
