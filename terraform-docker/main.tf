@@ -19,7 +19,7 @@ resource "docker_image" "nodered_image" {
 # Apesar do resource ser random, ele não cria um id diferente pra cada container, é preciso ter dois resources
 resource "random_string" "random" {
   # sempre que trabalhamos com count, o state possui index, [0]
-  count     = var.count_resources
+  count     = local.count_resources
   length    = 5
   number    = true
   upper     = true
@@ -28,13 +28,13 @@ resource "random_string" "random" {
 }
 
 resource "docker_container" "nodered_container" {
-  count = var.count_resources
+  count = local.count_resources
   # para pegar o valor do index/indice que está passando na hora, se utiliza count.index
   name  = join("-", ["nodereeed", random_string.random[count.index].id])
   image = docker_image.nodered_image.latest
   ports {
     internal = var.int_port
-    external = var.ext_port
+    external = var.ext_port[count.index]
   }
 }
 

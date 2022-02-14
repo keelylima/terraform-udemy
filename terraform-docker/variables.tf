@@ -1,16 +1,21 @@
 variable "ext_port" {
-  type    = number
-  default = 1880
+  type    = list
 }
 
-variable "count_resources" {
-  type    = number
-  default = 1
+# forma antiga
+# variable "count_resources" {
+#   type    = number
+#   default = 3
+# }
+
+# nova forma com locals
+locals {
+  count_resources = length(var.ext_port)
 }
 
 variable "int_port" {
   type    = number
-  default = 1885
+  default = 1880
 
   validation {
     condition     = var.int_port == 1880
