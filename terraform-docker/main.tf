@@ -13,7 +13,10 @@ provider "docker" {
 
 # essa é a primeira imagem que eu criei, que aparece em images no docker desktop
 resource "docker_image" "nodered_image" {
-  name = lookup(var.image, var.env)
+  # name = lookup(var.image, var.env)
+  # com workspace fica
+  name = lookup(var.image, terraform.workspace)
+
 }
 
 # Apesar do resource ser random, ele não cria um id diferente pra cada container, é preciso ter dois resources
@@ -30,11 +33,13 @@ resource "random_string" "random" {
 resource "docker_container" "nodered_container" {
   count = local.count_resources
   # para pegar o valor do index/indice que está passando na hora, se utiliza count.index
-  name  = join("-", ["nodereeed", random_string.random[count.index].id])
+  name  = join("-", ["nodereeed", terraform.workspace, random_string.random[count.index].id])
   image = docker_image.nodered_image.latest
   ports {
     internal = var.int_port
-    external = lookup(var.ext_port, var.env)[count.index]
+    # external = lookup(var.ext_port, var.env)[count.index]
+    # com workspace fica
+    external = lookup(var.ext_port, terraform.workspace)[count.index]
   }
   volumes {
     container_path = "/data"
