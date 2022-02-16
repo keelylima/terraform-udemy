@@ -13,9 +13,10 @@ provider "docker" {
 
 # essa é a primeira imagem que eu criei, que aparece em images no docker desktop
 resource "docker_image" "nodered_image" {
-  # name = lookup(var.image, var.env)
-  # com workspace fica
-  name = lookup(var.image, terraform.workspace)
+  # name = lookup(var.image, terraform.workspace)
+
+  # sem lookup
+  name = var.image[terraform.workspace]
 
 }
 
@@ -37,9 +38,10 @@ resource "docker_container" "nodered_container" {
   image = docker_image.nodered_image.latest
   ports {
     internal = var.int_port
-    # external = lookup(var.ext_port, var.env)[count.index]
-    # com workspace fica
-    external = lookup(var.ext_port, terraform.workspace)[count.index]
+    # external = lookup(var.ext_port, terraform.workspace)[count.index]
+
+    # sem o lookup
+    external = var.ext_port[terraform.workspace][count.index]
   }
   volumes {
     container_path = "/data"

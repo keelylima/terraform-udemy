@@ -1,10 +1,3 @@
-# posso utilizar terraform.workspace para não precisar definir variável para ambiente
-# variable "env" {
-#   type = string
-#   description = "env to deploy to"
-#   default = "dev"
-# }
-
 variable "image" {
   type = map
   description = "image for container"
@@ -30,20 +23,13 @@ variable "ext_port" {
   }
 }
 
-# forma antiga
-# variable "count_resources" {
-#   type    = number
-#   default = 3
-# }
-
 # nova forma com locals
-locals {
-  # lookup passo o nome do meu map, q á ext_port lá no tfvars, depois se passa key que eu defini aqui no variables como env
-  # ele vai criar de acordo com a quantidade que eu tenho no ext_port
-  # count_resources = length(lookup(var.ext_port, var.env))
-  
+locals {  
   # com terraform workspace
-  count_resources = length(lookup(var.ext_port, terraform.workspace))
+  # count_resources = length(lookup(var.ext_port, terraform.workspace))
+
+  # sem lookup
+  count_resources = length(var.ext_port[terraform.workspace])
 }
 
 variable "int_port" {
