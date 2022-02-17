@@ -1,5 +1,6 @@
 module "image" {
-  source = "./image"
+  source   = "./image"
+  image_in = var.image[terraform.workspace]
 }
 
 # Apesar do resource ser random, ele não cria um id diferente pra cada container, é preciso ter dois resources
