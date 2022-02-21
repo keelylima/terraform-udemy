@@ -14,22 +14,17 @@ resource "random_string" "random" {
   special   = false
 }
 
-resource "docker_container" "nodered_container" {
+module "container" {
+  source = "./container"
+  # permaneço count aqui, porque quero replicar múltiplos módulos, não quero replicar múltiplos containers e depois múltiplos módulos
   count = local.count_resources
   # para pegar o valor do index/indice que está passando na hora, se utiliza count.index
-  name  = join("-", ["nodereeed", terraform.workspace, random_string.random[count.index].id])
-  image = module.image.image_out
-  ports {
-    internal = var.int_port
-    # external = lookup(var.ext_port, terraform.workspace)[count.index]
-
-    # sem o lookup
-    external = var.ext_port[terraform.workspace][count.index]
-  }
-  volumes {
-    container_path = "/data"
-    #path.cwd pega D:/ ele reclama pq tem que ser um absolute path
-    # host_path = "${path.cwd}/noderedvol"
-  }
+  name_in  = join("-", ["nodereeed", terraform.workspace, random_string.random[count.index].id])
+  image_in = module.image.image_out
+  int_port_in = var.int_port
+  ext_port_in = var.ext_port[terraform.workspace][count.index]
+  container_path_in = "/data"
+  #path.cwd pega D:/ ele reclama pq tem que ser um absolute path
+  # host_path = "${path.cwd}/noderedvol"
 }
 
