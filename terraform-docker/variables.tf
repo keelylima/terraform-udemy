@@ -16,27 +16,27 @@ variable "image" {
 variable "ext_port" {
   type = map(any)
 
-  validation {
-    # não preciso usar [] porque o meu var.ext_port já é uma lista
-    condition     = max(var.ext_port["dev"]...) <= 65535 && min(var.ext_port["dev"]...) >= 1980
-    error_message = "The external port must be in the valid port range 0 - 65535."
-  }
+  # validation {
+  #   # não preciso usar [] porque o meu var.ext_port já é uma lista
+  #   condition     = max(var.ext_port["dev"]...) <= 65535 && min(var.ext_port["dev"]...) >= 1980
+  #   error_message = "The external port must be in the valid port range 0 - 65535."
+  # }
 
-  validation {
-    # não preciso usar [] porque o meu var.ext_port já é uma lista
-    condition     = max(var.ext_port["prod"]...) <= 1980 && min(var.ext_port["prod"]...) >= 1880
-    error_message = "The external port must be in the valid port range 0 - 65535."
-  }
+  # validation {
+  #   # não preciso usar [] porque o meu var.ext_port já é uma lista
+  #   condition     = max(var.ext_port["prod"]...) <= 1980 && min(var.ext_port["prod"]...) >= 1880
+  #   error_message = "The external port must be in the valid port range 0 - 65535."
+  # }
 }
 
 # nova forma com locals
-locals {
-  # com terraform workspace
-  # count_resources = length(lookup(var.ext_port, terraform.workspace))
+# locals {
+#   # com terraform workspace
+#   # count_resources = length(lookup(var.ext_port, terraform.workspace))
 
-  # sem lookup
-  count_resources = length(var.ext_port[terraform.workspace])
-}
+#   # sem lookup
+#   count_resources = length(var.ext_port[terraform.workspace])
+# }
 
 variable "int_port" {
   type    = number
