@@ -1,22 +1,26 @@
 # como funciona?
-    # meu root module, tem o module do container com os nomes da variavéis que estou passando aqui
-    # ele procura apenas o nome aqui, se realmente existe esse "parâmetro", mas o valor é setado dentro do root module mesmo
+# meu root module, tem o module do container com os nomes da variavéis que estou passando aqui
+# ele procura apenas o nome aqui, se realmente existe esse "parâmetro", mas o valor é setado dentro do root module mesmo
 variable "ext_port_in" {
-    description = "external port"
+  description = "external port"
 }
 
 variable "int_port_in" {
-    description = "internal port"
+  description = "internal port"
 }
 
 variable "name_in" {
-    description = "name container"
+  description = "name container"
 }
 
 variable "image_in" {
-    description = "image container"
+  description = "image container"
 }
 
 variable "container_path_in" {
-    description = "path container"
+  description = "path container"
+}
+
+variable "count_in" {
+  description = "count container"
 }
