@@ -17,10 +17,10 @@ variable "image_in" {
   description = "image container"
 }
 
-variable "container_path_in" {
-  description = "path container"
-}
-
 variable "count_in" {
   description = "count container"
+}
+
+variable "volumes_in" {
+  description = "type of volume"
 }
