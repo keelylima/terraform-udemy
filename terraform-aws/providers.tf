@@ -9,5 +9,5 @@ terraform {
 
 provider "aws" {
  shared_credentials_file = "˜/.aws/credentials"
- region     = "us-east-1"
+ region     = var.aws_region
 }
