@@ -1,5 +1,14 @@
 # -- networking/main.tf -- #
 
+data "aws_availability_zones" "available" {
+
+}
+
+resource "random_shuffle" "az_list" {
+  input        = data.aws_availability_zones.available.names
+  result_count = var.max_subnets
+}
+
 resource "random_integer" "random" {
   min = 1
   max = 100
@@ -22,7 +31,7 @@ resource "aws_subnet" "mtc_public_subnet" {
   # com count.index ele vai pegar o primeiro da lista na primeira iteração, depois o segundo da lista
   cidr_block              = var.public_cidrs[count.index]
   map_public_ip_on_launch = true
-  availability_zone       = ["us-east-1a", "us-east-1b", "us-east-1c"][count.index]
+  availability_zone       = random_shuffle.az_list.result[count.index]
 
   tags = {
     Name = "mtc_public_${count.index + 1}"
@@ -33,7 +42,7 @@ resource "aws_subnet" "mtc_private_subnet" {
   count             = var.private_sn_count
   vpc_id            = aws_vpc.mtc_vpc.id
   cidr_block        = var.private_cidrs[count.index]
-  availability_zone = ["us-east-1a", "us-east-1b", "us-east-1c"][count.index]
+  availability_zone = random_shuffle.az_list.result[count.index]
 
   tags = {
     Name = "mtc_private_${count.index + 1}"
