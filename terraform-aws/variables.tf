@@ -5,6 +5,4 @@ variable "aws_region" {
   description = "AWS Region"
 }
 
-variable "access_ip" {
-  type = string
-}
+variable "access_ip" {}
